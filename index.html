@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML Viewer</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Můžeme přidat vlastní styly zde */
+    </style>
+</head>
+    <div class="container">
+        <h1>PACKET TRACER VIEWER 0.0.1</h1>
+        <div id="deviceCount" class="mt-3">
+            <!-- Sem bude vložen počet zařízení v DEVICES -->
+        </div>
+        <div id="devicesInfo" class="row mt-3">
+            <!-- Sem budou vloženy informace o zařízeních -->
+        </div>
+        
+    </div>
+
+<script>
+    window.onload = function() {
+        fetch('data.xml') // Nahraď 'data.xml' cestou k tvému XML souboru
+            .then(response => response.text())
+            .then(data => {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(data, 'text/xml');
+                
+                // Počet zařízení v DEVICES
+                const deviceCount = xmlDoc.querySelectorAll('DEVICES DEVICE').length;
+                document.getElementById('deviceCount').innerHTML = `<p>Počet zařízení v Packet Traceru: ${deviceCount}</p>`;
+                
+                // Vytvoření kartiček pro každé zařízení
+                const devices = xmlDoc.querySelectorAll('DEVICES DEVICE');
+                const devicesInfoContainer = document.getElementById('devicesInfo');
+                
+                devices.forEach(device => {
+                    const deviceName = device.querySelector('NAME').textContent;
+                    const deviceType = device.querySelector('TYPE').textContent;
+    
+                    // Načtení commandů z running configu
+                    const runningConfigLines = device.querySelectorAll('RUNNINGCONFIG LINE');
+                    console.log(runningConfigLines);
+                    let runningConfigCommands = '';
+                    runningConfigLines.forEach(line => {
+                        runningConfigCommands += line.textContent + '<br>';
+                        
+                    });
+
+                    const deviceInfo = `
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">${deviceName}</h5>
+                                    <p class="card-text">Typ: ${deviceType}</p>
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Running Config (${runningConfigLines.length} řádků)
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="max-height: 200px; overflow-y: auto;">
+                                            ${runningConfigCommands}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    devicesInfoContainer.innerHTML += deviceInfo;
+                });
+            })
+            .catch(error => console.error('Chyba při načítání XML souboru:', error));
+    };
+</script>    
+</body>
+</html>
