@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <title>Device Page</title>
     <style>
         body {
@@ -100,12 +101,36 @@ p {
 .comment {
   opacity: 0.5;
 }
+.chatgpt-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin-left: 34%;
+    margin-top: -5%;
+  }
+  
+  .chatgpt-button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Styling for the icon */
+  .button-icon {
+    margin-right: 10px;
+  }
     </style>
 </head>
 <body>
     <div class="window">
         <div class="bar">
           <div class="btn"></div>
+          <button  id="chatgpt" class="chatgpt-button">
+            <i class="fas fa-comment button-icon"></i> Analyzovat konfiguraci pomocí CHATGPT
+          </button>
         </div>
         <div class="body">
           <pre><div class="prompt"><span class="command"><pre id="runningConfigText"></pre></span></div></pre>
@@ -114,6 +139,40 @@ p {
 </body>
 
 <script>
+document.querySelector('#chatgpt').addEventListener('click', function(event) {
+    event.preventDefault();
+
+    // Create modal
+    var modal = document.createElement('div');
+    modal.style.width = '80%';
+    modal.style.height = '80%';
+    modal.style.position = 'fixed';
+    modal.style.top = '10%';
+    modal.style.left = '10%';
+    modal.style.backgroundColor = "#dd0525";
+    modal.style.padding = '20px';
+    modal.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
+    modal.style.zIndex = '1000';
+
+    // Create iframe
+    var iframe = document.createElement('iframe');
+    iframe.src = 'chatgpt.html';
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+
+    // Append iframe to modal
+    modal.appendChild(iframe);
+
+    // Append modal to body
+    document.body.appendChild(modal);
+
+    // Close modal on click outside
+    modal.addEventListener('click', function() {
+        document.body.removeChild(modal);
+    });
+});
+  
+
     window.onload = function(){
         render();
     }
@@ -127,6 +186,9 @@ p {
             return '<code>' + command + '</code><br>';
         });
         document.getElementById('runningConfigText').innerHTML = formattedCommands.join('');
+        const copyText = "Analyzuj tento cisco network config file:  " + formattedCommands.join('');
+        navigator.clipboard.writeText(copyText.value);
+
     }
 
     function get_device() {
