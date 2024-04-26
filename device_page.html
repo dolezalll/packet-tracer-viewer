@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Page</title>
+</head>
+<body>
+    <div id="runningConfig">
+        <p id="runningConfigText">
+
+        </p>
+    </div>
+</body>
+
+<script>
+    window.onload = function(){
+        render();
+    }
+
+    function render() {
+        const device = get_device();
+        console.log("device", device);
+        console.log("commands", device.commands);
+
+        const html = device.commands.map((command) => {
+            return command + '<br>';
+        });
+        document.getElementById('runningConfigText').innerHTML = html;
+    }
+    function get_device() {
+        const devices = JSON.parse( localStorage.getItem("devices") );
+        console.log("Devices from ls", devices);
+        const urlParams = new URLSearchParams(window.location.search);
+        const name = urlParams.get('name');
+        console.log("Name param", name);
+
+        return devices.find((device) => device.name === name);
+    }
+</script>
+</html>
