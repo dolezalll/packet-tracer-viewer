@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XML Viewer</title>
+    <title>PACKET TRACER ZAŘÍZENÍ</title>
     <link rel="icon" href="images/favicon.ico" type="image/x-icon">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* Můžeme přidat vlastní styly zde */
-    </style>
+   <link rel="stylesheet" href="style.css">
 </head>
     <div class="container">
         <h1>PACKET TRACER VIEWER 0.0.1</h1>
@@ -22,19 +20,23 @@
     </div>
 
 <script>
-    window.onload = async function() {
-//TODO: When the API is made this will fetch from API
-        fetch('data.xml')
-        .then((result) => result.text())
-        .then(async data => {
+window.onload = async function() {
+    // Získání dat z localStorage
+    const data = localStorage.getItem('decodedXML');
+    
+    if (data) {
+        try {
+            // Pokud jsou data k dispozici, provedeme potřebné kroky
             await get_devices(data);
             render_header();
             render_devices();
-        })
-        .catch((err) => {
-            throw err;
-        });
-    };
+        } catch (err) {
+            console.error('Chyba při zpracování dat:', err);
+        }
+    } else {
+        console.error('Data nebyla nalezena v localStorage.');
+    }
+};
 
     function render_header() {
         const devices = JSON.parse(localStorage.getItem("devices"));

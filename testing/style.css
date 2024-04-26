@@ -1,0 +1,25 @@
+body {
+    background-color: #000;
+    color: #fff;
+}
+
+.container {
+    background-color: #333;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+.card {
+    background-color: #444;
+    color: #fff;
+}
+
+.card .btn {
+    background-color: #555;
+    color: #fff;
+}
+
+.card .btn:hover {
+    background-color: #666;
+    color: #fff;
+}
